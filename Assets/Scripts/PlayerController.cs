@@ -5,11 +5,13 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
 	public float thrust;
+	public float torque;
 	public Text countText;
 	public Text winText;
 
 	private Rigidbody rb;
 	private int count;
+	private Renderer rend;
 
 	void Start () {
 		rb = GetComponent<Rigidbody> ();
@@ -17,15 +19,23 @@ public class PlayerController : MonoBehaviour {
 
 		SetCountText ();
 		winText.text = "";
+
+		rend = GetComponent<Renderer> ();
+		rend.enabled = false;
 	}
 
 	void FixedUpdate () {
-		float moveHorizontal = Input.GetAxis ("Horizontal");
+		// forward and backward translate, left and right rotate
+
 		float moveVertical = Input.GetAxis ("Vertical");
+		float moveHorizontal = Input.GetAxis ("Horizontal");
 
-		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+		//Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
 
-		rb.AddForce (movement * thrust);
+		Vector3 movement = new Vector3 (0.0f, 0.0f, moveVertical);
+
+		rb.AddRelativeForce (movement * thrust);
+		rb.AddRelativeTorque (Vector3.up * torque * moveHorizontal);
 
 		if (count == 12) {
 			DisplayWinText ();
